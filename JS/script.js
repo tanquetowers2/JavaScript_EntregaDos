@@ -1,4 +1,3 @@
-//After clase 9
 //console.log(productos);
 const carrito = [];
 let totalCarrito;
@@ -20,7 +19,7 @@ function renderizarProds(){
         `;
     }
 
-    //EVENTOS
+    //Eventos
     productos.forEach(producto => {
         //evento para cada boton
         document.getElementById(`btn${producto.id}`).addEventListener("click",function(){
@@ -57,5 +56,41 @@ function agregarAlCarrito(productoComprado){
     totalCarrito = carrito.reduce((acumulador,producto)=> acumulador + producto.precio,0);
     let infoTotal = document.getElementById("total");
     infoTotal.innerText="Total a pagar $: "+totalCarrito;
+}
+
+
+//boton de finalizar
+let finalizar=document.getElementById("finalizar");
+finalizar.onclick=()=>{
+    //Sweet
+    Swal.fire({
+        title: 'Pedido confirmado!',
+        text: 'Tu paquete está en proceso de preparación',
+        imageUrl: '/ELEMENTOS/sticker-ok-vector-19181225.jpg',
+        imageWidth: 180,
+        imageHeight: 180,
+        imageAlt: 'imagen ok',
+    });
+
+    //Toastify cuando finaliza la compra
+    Toastify({
+        text: "Gracias por su compra!",
+        duration: 3000,
+        gravity: 'top',
+        position: 'right',
+        style: {
+            background: 'linear-gradient(to right, #FF0000, #0000FF)'
+        }
+    }).showToast();
+    
+    //LUXON
+    //  cerrar la compra
+    const fin=DateTime.now();
+    const Interval=luxon.Interval;
+    const tiempo=Interval.fromDateTimes(inicio,fin);
+    Toastify({
+        text: "Tardaste "+tiempo.length('minutes')+" minutos en comprar!",
+        duration: 3000,
+    }).showToast();
 }
 
