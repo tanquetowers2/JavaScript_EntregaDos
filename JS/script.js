@@ -1,7 +1,8 @@
-//console.log(productos);
 const carrito = [];
 let totalCarrito;
 let contenedor = document.getElementById("misprods");
+
+
 
 
 function renderizarProds(){
@@ -26,13 +27,20 @@ function renderizarProds(){
             agregarAlCarrito(producto);
         });
     })
+
+
+    
 }
 
 renderizarProds();
 
+
 function agregarAlCarrito(productoComprado){
     carrito.push(productoComprado);
     console.table(carrito);
+
+    //AGREGAR STORAGE 
+    localStorage.setItem("carrito", JSON.stringify(carrito));
 
     Swal.fire({
         title: productoComprado.nombre,
@@ -51,17 +59,50 @@ function agregarAlCarrito(productoComprado){
             <td>${productoComprado.id}</td>
             <td>${productoComprado.nombre}</td>
             <td>${productoComprado.precio}</td>
+            <td><button class="btn btn-light" onclick="eliminar(event)">❌ Eliminar producto </button></td>
         </tr>
     `;
     totalCarrito = carrito.reduce((acumulador,producto)=> acumulador + producto.precio,0);
     let infoTotal = document.getElementById("total");
     infoTotal.innerText="Total a pagar $: "+totalCarrito;
+    
+}
+
+//Sacar prod
+function eliminar(ev){
+    console.log(ev);
+    let fila = ev.target.parentElement.parentElement;
+    console.log(fila);
+    let id = fila.children[0].innerText;
+    console.log(id);
+    let indice = carrito.findIndex(producto => producto.id == id);
+    console.log(indice)
+    //remueve el producto del carro
+    carrito.splice(indice,1);
+    console.table(carrito);
+    //remueve la fila de la tabla
+    fila.remove();
+    //recalcular el total
+    let preciosAcumulados = carrito.reduce((acumulador,producto)=>acumulador+producto.precio,0);
+    total.innerText="Total a pagar $: "+preciosAcumulados;
+    //storage
+    localStorage.setItem("carrito",JSON.stringify(carrito));
 }
 
 
 //boton de finalizar
-let finalizar=document.getElementById("finalizar");
+let finalizar=document.getElementById("finalizarcompra");
 finalizar.onclick=()=>{
+    if(carrito.length==0){
+        Swal.fire({
+            title: 'No hay productos en el carro',
+            text: 'Seleccione uno',
+            showConfirmButton: false,
+            timer: 1500
+            
+        });
+
+    }
     //Sweet
     Swal.fire({
         title: 'Pedido confirmado!',
